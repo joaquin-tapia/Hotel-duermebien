@@ -6,7 +6,7 @@ class Conexion:
             host="localhost",
             user="root",
             password="",
-            database="hotelduermebien"
+            database="hotel3"
         )
         self.__cursor = self.__connection.cursor(buffered=True)
 
@@ -15,10 +15,20 @@ class Conexion:
 
     @property
     def connection(self):
+        if not self.__connection.is_connected():
+           
+            self.__connection.reconnect(attempts=3, delay=5)
+            self.__cursor = self.__connection.cursor(buffered=True)
+           
         return self.__connection
 
     @property
     def cursor(self):
+        if not self.__connection.is_connected():
+            
+            self.__connection.reconnect(attempts=3, delay=5)
+            self.__cursor = self.__connection.cursor(buffered=True)
+          
         return self.__cursor
 
     def rollback(self):
