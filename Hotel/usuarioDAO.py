@@ -2,6 +2,7 @@ import psycopg2
 import bcrypt
 from conexion import Conexion
 
+
 class UsuarioDao:
     def __init__(self, conexion):
         self.__conexion = conexion
@@ -24,21 +25,22 @@ class UsuarioDao:
         return None
 
     def check_administrador(self):
-        self.__conexion.cursor.execute("SELECT COUNT(*) FROM usuario WHERE cargo = 'Administrador'")
+        query = "SELECT COUNT(*) FROM usuario WHERE cargo = 'Administrador'"
+        self.__conexion.cursor.execute(query)
         count = self.__conexion.cursor.fetchone()[0]
         return count > 0
 
     def crear_administrador(self, nombre, contraseña):
-        contraseña_hash = bcrypt.hashpw(contraseña.encode('utf-8'), bcrypt.gensalt())
+        contraseña_hash = bcrypt.hashpw(contraseña.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
         query = "INSERT INTO usuario (nombre, contraseña, cargo) VALUES (%s, %s, 'Administrador')"
         self.__conexion.cursor.execute(query, (nombre, contraseña_hash))
-        self.__conexion.connection.commit()
+        self.__conexion.commit()
 
     def crear_usuario(self, nombre, contraseña, cargo):
-        contraseña_hash = bcrypt.hashpw(contraseña.encode('utf-8'), bcrypt.gensalt())
+        contraseña_hash = bcrypt.hashpw(contraseña.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
         query = "INSERT INTO usuario (nombre, contraseña, cargo) VALUES (%s, %s, %s)"
         self.__conexion.cursor.execute(query, (nombre, contraseña_hash, cargo))
-        self.__conexion.connection.commit()
+        self.__conexion.commit()
 
     def obtener_usuarios(self):
         query = "SELECT id, nombre, cargo FROM usuario"
@@ -49,9 +51,9 @@ class UsuarioDao:
     def modificar_permisos(self, id_usuario, nuevo_cargo):
         query = "UPDATE usuario SET cargo = %s WHERE id = %s"
         self.__conexion.cursor.execute(query, (nuevo_cargo, id_usuario))
-        self.__conexion.connection.commit()
+        self.__conexion.commit()
 
     def eliminar_usuario(self, id_usuario):
         query = "DELETE FROM usuario WHERE id = %s"
         self.__conexion.cursor.execute(query, (id_usuario,))
-        self.__conexion.connection.commit()
+        self.__conexion.commit()
