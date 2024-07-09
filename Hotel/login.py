@@ -32,7 +32,7 @@ class Login:
         conexion = Conexion()
         usuario_dao = UsuarioDao(conexion)
         
-        print("=== Registrar nuevo usuario ===") #regitro para nuevo usuario
+        print("=== Registrar nuevo usuario ===")
         nombre = input("Nombre de usuario: ")
         contraseña = getpass.getpass("Contraseña: ")
         print("Seleccione el cargo del usuario:")
